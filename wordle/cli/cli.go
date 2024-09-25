@@ -1,4 +1,5 @@
 // TODO: flags
+// TODO: menu
 package cli
 
 import (
@@ -16,6 +17,7 @@ import (
 	"github.com/johnietre/term-games/common/ansi"
 	inputpkg "github.com/johnietre/term-games/common/input"
 	utils "github.com/johnietre/utils/go"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -32,7 +34,23 @@ func init() {
 	sixWordsPath = filepath.Join(thisDir, "six-words.txt")
 }
 
+func MakeCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                   "wordle",
+		Short:                 "Play Worlde",
+		Run:                   run,
+		DisableFlagsInUseLine: true,
+	}
+	return cmd
+}
+
 func Run() {
+	if err := MakeCmd().Execute(); err != nil {
+		common.Fatal("error running: ", err)
+	}
+}
+
+func run(_ *cobra.Command, _ []string) {
 	defer common.GlobalDeferrer.Run()
 
 	restore, _, err := common.MakeTermRaw()

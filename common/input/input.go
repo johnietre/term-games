@@ -20,6 +20,40 @@ const (
 )
 
 func FromBytes(b []byte) Input {
+	l := len(b)
+	switch b[0] {
+	case 0x1B:
+		if l > 1 {
+			switch b[1] {
+			case 0x5B:
+				if l > 2 {
+					switch b[2] {
+					case 0x03:
+						return CtrlC2
+					case 0x33:
+						if l > 3 {
+							switch b[3] {
+							case 0x7E:
+								return Del2
+							}
+						}
+					case 0x41:
+						return ArrowUp
+					case 0x42:
+						return ArrowDown
+					case 0x43:
+						return ArrowRight
+					case 0x44:
+						return ArrowLeft
+					}
+				}
+			}
+		}
+	}
+	return Input(b[0])
+}
+
+func FromByteArray(b [4]byte) Input {
 	switch b[0] {
 	case 0x1B:
 		switch b[1] {
